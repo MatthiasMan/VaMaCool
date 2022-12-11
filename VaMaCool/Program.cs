@@ -8,7 +8,7 @@ namespace VaMaCool
     {
         public static  string _input1 = "class P {f() : Int { 1 };};";
         public static string _input2 = "x <- 5 + 3;";
-        public static string _input3 = "x <- 2 + 3 * 3 / 5;";
+        public static string _input3 = "x <- 2 + 3 * 10 / 5;";
 
         static void Main(string[] args)
         {

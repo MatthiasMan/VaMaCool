@@ -9,21 +9,25 @@ namespace VaMaCool
     {
         public override int VisitClassDefine([NotNull] CoolParser.ClassDefineContext context)
         {
+            Console.WriteLine("--VisitClassDefine--");
             return base.VisitClassDefine(context);
         }
 
         public override int VisitMethod([NotNull] CoolParser.MethodContext context)
         {
+            Console.WriteLine("--VisitMethod--");
             return base.VisitMethod(context);
         }
 
         public override int VisitExpression([NotNull] CoolParser.ExpressionContext context)
         {
+            Console.WriteLine("--VisitExpr--");
             return base.VisitExpression(context);
         }
 
         public override int VisitId([NotNull] CoolParser.IdContext context)
         {
+            Console.WriteLine("--VisitID--");
             return base.VisitId(context);
         }
 
@@ -36,6 +40,7 @@ namespace VaMaCool
 
         public override int VisitParentheses([NotNull] CoolParser.ParenthesesContext context)
         {
+            Console.WriteLine("--VisitParentheses--");
             return base.VisitParentheses(context);
         }
 
