@@ -1,61 +1,147 @@
-﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace VaMaCool
 {
-    class Program
+    public class CoolVisitor1 : CoolBaseVisitor<int>
     {
-        public static  string _input1 = "class P {f() : Int { 1 };};";
-        public static string _input2 = "x <- 5 + 3;";
-        public static string _input3 = "x <- 2 + 3 * 10 / 5;";
-
-        static void Main(string[] args)
+        public override int VisitClassDefine([NotNull] CoolParser.ClassDefineContext context)
         {
-            LexerTest();
-
-            ParserTest();
+            Console.WriteLine("--VisitClassDefine--");
+            return base.VisitClassDefine(context);
         }
 
-        static void LexerTest()
+        public override int VisitMethod([NotNull] CoolParser.MethodContext context)
         {
-            //string input = "class Cons inherits List { xcar: Int;   xcdr: List; isNil() : Bool { false };   init(hd: Int, tl: List) : Cons { { xcar < -hd;   xcdr < -tl;    self;    }}};";
+            Console.WriteLine("--VisitMethod--");
+            return base.VisitMethod(context);
+        }
 
-            AntlrInputStream inputStream = new AntlrInputStream(_input3);
-            CoolLexer lex = new CoolLexer(inputStream);
+        public override int VisitExpression([NotNull] CoolParser.ExpressionContext context)
+        {
+            Console.WriteLine("--VisitExpr--");
+            return base.VisitExpression(context);
+        }
 
-            List<IToken> itl = (List<IToken>)lex.GetAllTokens();
-            foreach (var item in itl)
+        public override int VisitId([NotNull] CoolParser.IdContext context)
+        {
+            Console.WriteLine("--VisitID--");
+            return base.VisitId(context);
+        }
+
+        public override int VisitInt([NotNull] CoolParser.IntContext context)
+        {
+            Console.WriteLine("--VisitInt--");
+            int.TryParse(context.INT().GetText(), out int value);
+            return value;
+        }
+
+        public override int VisitBlock([NotNull] CoolParser.BlockContext context)
+        {
+            Console.WriteLine("--VisitExpression--");
+            foreach (var expr in context.expression())
             {
-                Console.Write(item.ToString() + " -> ");
-                string tokenname = lex.Vocabulary.GetDisplayName(item.Type);
-
-                // string tokenname = lex.Vocabulary.GetLiteralName(item.Type);
-                // if (tokenname == null) tokenname = lex.Vocabulary.GetSymbolicName(item.Type);
-                Console.WriteLine(tokenname);
+                Visit(expr);
             }
+
+            return 0;
+
+            return base.VisitBlock(context);
         }
 
-        static void ParserTest()
+        public override int VisitWhile([NotNull] CoolParser.WhileContext context)
         {
-            //string input = "john says: hello @michael this will not work\n";
+            Console.WriteLine("--VisitWhile--");
 
-            AntlrInputStream inputStream = new AntlrInputStream(_input3);
-            CoolLexer lex = new CoolLexer(inputStream);
+            while (Visit(context.expression(0)) == 0)
+            {
+                Visit(context.expression(1));
+            }
 
-            CommonTokenStream commonTokenStream = new CommonTokenStream(lex);
-
-            CoolParser parser = new CoolParser(commonTokenStream);
-
-            //CoolParser.ClassDefineContext ctx1 = parser.classDefine();
-            //Console.WriteLine(ctx1.ToStringTree());
-            CoolParser.ExpressionContext ctx2 = parser.expression();
-            Console.WriteLine(ctx2.ToStringTree());
-            //CoolParser.MethodContext ctx3 = parser.method();
-            //Console.WriteLine(ctx3.ToStringTree());
-
-            CoolVisitor1 v = new CoolVisitor1();
-            var res = v.Visit(ctx2);
+            return 0;
         }
+
+        public override int VisitParentheses([NotNull] CoolParser.ParenthesesContext context)
+        {
+            Console.WriteLine("--VisitParentheses--");
+            return Visit(context.expression());
+
+            return base.VisitParentheses(context);
+        }
+
+        public override int VisitArithmetic([NotNull] CoolParser.ArithmeticContext context)
+        {
+            Console.WriteLine("--VisitArithmetic--");
+            int value = 0;
+
+            int left = Visit(context.expression(0));
+            int right = Visit(context.expression(1));
+            switch (context.op.Text)
+            {
+                case "+":
+                    value = left + right;
+                    break;
+                case "-":
+                    value = left - right;
+                    break;
+                case "*":
+                    value = left * right;
+                    break;
+                case "/":
+                    value = left / right;
+                    break;
+                default:
+                    throw new Exception("Arithmetic operator not found");
+            }
+            return value;
+        }
+
+        public override int VisitAssignment([NotNull] CoolParser.AssignmentContext context)
+        {
+            Console.WriteLine("--VisitAssignment--");
+            return base.VisitAssignment(context);
+        }
+
+        public override int VisitComparisson([NotNull] CoolParser.ComparissonContext context)
+        {
+            Console.WriteLine("--VisitComparisson--");
+            int left = Visit(context.expression(0));
+            int right = Visit(context.expression(1));
+
+            switch (context.op.Text)
+            {
+                case "<=":
+                    if (left <= right)
+                    {
+                        return 0;
+                    }
+                    else
+                        return -1;
+                    break;
+                case "<":
+                    if (left < right)
+                    {
+                        return 0;
+                    }
+                    else
+                        return -1;
+                    break;
+                case "=":
+                    if (left == right)
+                    {
+                        return 0;
+                    }
+                    else
+                        return -1;
+                    break;
+                default:
+                    throw new Exception("Arithmetic operator not found");
+            }
+
+            return base.VisitComparisson(context);
+        }
+
     }
 }
