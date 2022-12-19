@@ -1,0 +1,17 @@
+1)CoolClassVisitor
+List<ClassMap> befüllen (nur Klassennamen)
+
+2)CoolInheritsVisitor
+List<ClassMap> befüllen (nur die inherited Klassennamen)
+
+3)CoolMethodsVisitor
+List<ClassMap> befüllen (nur methoden namen)
+
+4)CoolPropertyVisitor
+List<ClassMap> befüllen (Property namen + (default)Werte)
+
+5)CoolVisitor
+- Find main
+- ObjectScope.SetScope(this.Class)
+- CurrentScope = ObjectScope
+Run().....

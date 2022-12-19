@@ -1,0 +1,174 @@
+SymbolManager
+ Scope CurrentScope
+ Scope Root
+ 
+
+
+
+Scope
+ List<Scope> Children
+ Scope Parent
+       //name, value
+ List<(string,object)> Values/IDs
+ Add((string, object) ID) : void
+ Find(string ID) : object
+ {
+  if(Parent != null)
+  {
+
+  }
+ }
+ 
+
+Class1
+
+X1
+
+
+
+Main().....
+  var hh = new Class2()
+
+  var kgk = new Class2()
+  hh.Foo91()
+  kgk.Foo91()
+  hh.Foo92()
+  X1 = F12
+
+
+
+
+
+Class2
+
+F12 = 5
+F9
+
+
+Foo91()....F12 = F12 + 2
+
+Foo92()....F12 = F12 + 5
+
+
+
+
+
+
+
+
+
+
+1)CoolClassVisitor
+List<ClassMap> befüllen (nur Klassennamen)
+
+2)CoolInheritsVisitor
+
+3)CoolMethodsVisitor
+List<ClassMap> befüllen (nur methoden namen)
+
+4)CoolPropertyVisitor
+List<ClassMap> befüllen (Property namen + (default)Werte)
+
+5)CoolVisitor
+- Find main
+- ObjectScope.SetScope(this.Class)
+- CurrentScope = ObjectScope
+
+
+
+
+
+A 
+ f : INT = 3
+ foo()
+ g=0
+
+C:B
+ p = 12
+
+B:A
+ k = foo()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

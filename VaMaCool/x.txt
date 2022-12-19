@@ -1,0 +1,47 @@
+﻿class Foo inherits Bazz {
+     a : Int;
+
+     b : Int;
+
+     doh() : Int;
+
+};
+
+class Bar inherits Razz {
+
+     c : Int <- doh();
+
+     d : Object <- printh();
+};
+
+
+class Razz inherits Foo {
+
+     e : Int;
+
+     f : Int ;
+
+};
+
+class Bazz inherits IO {
+
+     h : Int <- 1;
+
+     g : Int ;
+
+     i : Object ;
+
+     printh() : Int { { out_int(h); 0; } };
+
+     doh() : Int { (let i: Int <- h in { h <- h + 1; i; } ) };
+};
+
+class Main {
+  a : Int <- 4;
+  b : Int <- 4;
+  c : Int <- 4;
+  d : Int <- 4;
+
+  main(): String { "do nothing" };
+
+};
