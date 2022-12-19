@@ -38,9 +38,36 @@ namespace VaMaCool
             return value;
         }
 
+        public override int VisitBlock([NotNull] CoolParser.BlockContext context)
+        {
+            Console.WriteLine("--VisitExpression--");
+            foreach (var expr in context.expression())
+            {
+                Visit(expr);
+            }
+
+            return 0;
+
+            return base.VisitBlock(context);
+        }
+
+        public override int VisitWhile([NotNull] CoolParser.WhileContext context)
+        {
+            Console.WriteLine("--VisitWhile--");
+
+            while (Visit(context.expression(0)) == 0)
+            {
+                Visit(context.expression(1));
+            }
+
+            return 0;
+        }
+
         public override int VisitParentheses([NotNull] CoolParser.ParenthesesContext context)
         {
             Console.WriteLine("--VisitParentheses--");
+            return Visit(context.expression());
+
             return base.VisitParentheses(context);
         }
 
@@ -76,5 +103,45 @@ namespace VaMaCool
             Console.WriteLine("--VisitAssignment--");
             return base.VisitAssignment(context);
         }
+
+        public override int VisitComparisson([NotNull] CoolParser.ComparissonContext context)
+        {
+            Console.WriteLine("--VisitComparisson--");
+            int left = Visit(context.expression(0));
+            int right = Visit(context.expression(1));
+
+            switch (context.op.Text)
+            {
+                case "<=":
+                    if (left <= right)
+                    {
+                        return 0;
+                    }
+                    else
+                        return -1;
+                    break;
+                case "<":
+                    if (left < right)
+                    {
+                        return 0;
+                    }
+                    else
+                        return -1;
+                    break;
+                case "=":
+                    if (left == right)
+                    {
+                        return 0;
+                    }
+                    else
+                        return -1;
+                    break;
+                default:
+                    throw new Exception("Arithmetic operator not found");
+            }
+
+            return base.VisitComparisson(context);
+        }
+
     }
 }
