@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VaMaCool
 {
-    class ScopeVal
+    /*class ScopeVal
     {
         public string Name { get; set; }
 
@@ -13,9 +13,9 @@ namespace VaMaCool
 
         public EnumArt x { get; set; }
 
-    }
+    }*/
 
-    enum EnumArt
+    public enum EnumArt
     {
         Class,
         Method,
@@ -26,35 +26,57 @@ namespace VaMaCool
     {
         // Scope-Art Class / Method 
 
+        public EnumArt EnumArt { get; set; }
+
         public string Name { get; set; }
 
         public List<Scope1> Children { get; set; } = new List<Scope1>();
 
         public Scope1 Parent { get; set; } = null;
 
-        public List<Formal> IdValues { get; set; } = new List<Formal>();
+        public List<Property> IdValues { get; set; } = new List<Property>();
         //public Dictionary<string, object> IdValues { get; set; } = new Dictionary<string, object>();
 
-        public void Add(Formal id)
+        public void Add(Property id)
         {
             IdValues.Add(id);
         }
 
-        public Formal Find(string Id)
+        public (Property,Scope1) Find(string Id)
         {
             if(IdValues.Any(IdV=>IdV.Id == Id))
             {
-                return IdValues.FirstOrDefault(i => i.Id == Id);
+                return (IdValues.FirstOrDefault(i => i.Id == Id), this);
             }
             else
-            {
-                if (Parent != null)
+            {  //                   wenn ich eine klasse bin will ich nicht in den naechst aeußeren scope schauen
+                if (Parent != null && this.EnumArt != EnumArt.Class)
                 {
                     return Parent.Find(Id);
                 }
                 else
-                    return null;
+                    return (null, null);
             }
+        }
+
+        public Scope1 FindToBot(string name)
+        {
+            Scope1 res = null;
+
+            if (this.Name == name)
+                return this;
+            else
+            {
+                this.Children.ForEach(c =>
+                {
+                    if (res != null)
+                        return;
+
+                    res = c.FindToBot(name);
+                } );
+            }
+
+            return res;
         }
     }
 }

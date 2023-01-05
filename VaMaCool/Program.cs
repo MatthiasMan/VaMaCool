@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using VaMaCool.Visitors;
 
 namespace VaMaCool
 {
@@ -42,7 +43,7 @@ namespace VaMaCool
         static void ParserTest()
         {
 
-            var s = File.ReadAllText(Directory.GetCurrentDirectory() + "/x.txt");
+            var s = File.ReadAllText(Directory.GetCurrentDirectory() + "/y.txt");
 
 
 
@@ -97,10 +98,11 @@ namespace VaMaCool
             //Manager.ObjectScope = new Scope1() { Name = mainClass.Name, IdValues };
             //Manager.CurrentScope = Manager.ObjectScope;
 
-            
 
 
-            CoolVisitor2  v = new CoolVisitor2();
+
+            //CoolVisitor2  v = new CoolVisitor2();
+            CoolVisitor3 v = new CoolVisitor3();
             var res = v.Visit(ctx2);
         }
     }

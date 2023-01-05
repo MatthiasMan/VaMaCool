@@ -16,7 +16,7 @@ namespace VaMaCool
                 var superClasss = Manager.Classes.FirstOrDefault(c => c.Name == context.TYPE(1).GetText());
 
                 if (classs == null || superClasss == null)
-                    throw new Exception();
+                    throw new Exception("Super class wasn't found");
 
                 classs.InheritsFrom = superClasss;         
             

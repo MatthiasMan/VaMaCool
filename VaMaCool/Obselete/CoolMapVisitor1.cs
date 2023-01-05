@@ -14,11 +14,11 @@ namespace VaMaCool
             return base.VisitClassDefine(context);
         }
 
-        public override object VisitMethod([NotNull] CoolParser.MethodContext context)
+       /* public override object VisitMethod([NotNull] CoolParser.MethodContext context)
         {
             Manager.Classes.Last().Methods.Add(context.ID().GetText());
             return base.VisitMethod(context);
-        }
+        }*/
 
         public override object VisitProperty([NotNull] CoolParser.PropertyContext context)
         {

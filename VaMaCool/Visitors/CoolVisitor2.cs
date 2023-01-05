@@ -10,6 +10,9 @@ namespace VaMaCool
 {
     public class CoolVisitor2:CoolBaseVisitor<object>
     {
+        // e.g. x <- new Car
+        private string _lastName = string.Empty;
+
         public override object VisitIf([NotNull] CoolParser.IfContext context)
         {
            
@@ -34,9 +37,11 @@ namespace VaMaCool
         {
             Scope1 newBlock = new Scope1()
             {
-                Name = context.TYPE().GetText(),
+                Name = _lastName, //context.TYPE().GetText(),
                 Children = new List<Scope1>(),
-                Parent = Manager.CurrentScope
+                Parent = Manager.CurrentScope,
+                EnumArt = EnumArt.Class,
+                
             };
 
             var mainCl = Manager.Classes.FirstOrDefault(c => c.Name == context.TYPE().GetText());
@@ -55,17 +60,28 @@ namespace VaMaCool
 
         public override object VisitDispatchExplicit([Antlr4.Runtime.Misc.NotNull] CoolParser.DispatchExplicitContext context)
         {
-            var variabl =Manager.CurrentScope.IdValues.FirstOrDefault(i => i.Id == context.expression(0).GetText());
-            if (variabl == null)
+            var variabl =Manager.CurrentScope.Find(context.expression(0).GetText());
+            
+            
+            
+            if (variabl == (null, null))
                 throw new Exception();
 
             string methoName =context.ID().GetText();
 
             //Manager.CurrentScope.Children.FirstOrDefault(c => c.Name ==);
 
+            var x = Manager.CurrentScope.Find(methoName);
 
+            string oldScopeName = Manager.CurrentScope.Name;
 
-            string x = (string) Visit(context.expression(0));
+            Manager.CurrentScope = x.Item2;
+
+            var result = Visit(x.Item1.Expression);
+
+            Manager.CurrentScope = Manager.ObjectScope.FindToBot(oldScopeName);
+
+            //string x = (string) Visit(context.expression(0));
 
 
             
@@ -116,7 +132,8 @@ namespace VaMaCool
                     Name = "Main",
                     Children = new List<Scope1>(),
                     Parent = null,
-                    IdValues = new List<Formal>()
+                    EnumArt = EnumArt.Class,
+                    IdValues = new List<Property>()
                 };
 
                 var mainCl = Manager.Classes.FirstOrDefault(c => c.Name == "Main");
@@ -124,18 +141,29 @@ namespace VaMaCool
                 foreach (var prop in mainCl.Properties)
                 {
                     Manager.CurrentScope.IdValues.Add(prop);
-                } 
+                }
 
                 Manager.ObjectScope = Manager.CurrentScope;
+
+                Method mainMethod = mainCl.Methods.FirstOrDefault(m => m.Id == "main");
+
+                Scope1 mainScope = new Scope1()
+                {
+                    Name = "main",
+                    Children = new List<Scope1>(),
+                    EnumArt = EnumArt.Method,
+                    Parent = Manager.ObjectScope,
+                    IdValues = new List<Property>()
+                };
+                
+                Manager.ObjectScope.Children.Add(mainScope);
+
+                Manager.CurrentScope = mainScope;
+
+                Visit(mainMethod.Expression);
             }
             //string className = context.TYPE(0).GetText();
-            
-            
-                 
-            
-            
-            
-            
+                   
             return base.VisitClassDefine(context);
         }
 
@@ -166,30 +194,31 @@ namespace VaMaCool
             var val = Manager.CurrentScope.Find(context.GetText());
             object result;
 
-            if(val == null)
+            if(val == (null, null))
             {
                 throw new KeyNotFoundException();
             }
             else
             {
-                result = Visit(val.Expression);
+                if (val.Item1.Expression == null)
+                    return null; // just x: Int;
+                else 
+                    return Visit(val.Item1.Expression);
             }
-
-            return result;
         }
 
         public override object VisitInt([NotNull] CoolParser.IntContext context)
         {
             Console.WriteLine("--VisitInt--");
             int.TryParse(context.INT().GetText(), out int value);
-            return value;
+            return (value, "Int");
         }
 
         public override object VisitBlock([NotNull] CoolParser.BlockContext context)
         {
             Console.WriteLine("--VisitExpression--");
 
-            Scope1 newBlock = new Scope1()
+            /*Scope1 newBlock = new Scope1()
             {
                 Name = "block",
                 Children = new List<Scope1>(),
@@ -197,15 +226,15 @@ namespace VaMaCool
             };
 
             Manager.CurrentScope.Children.Add(newBlock);
-            Manager.CurrentScope = newBlock;
+            Manager.CurrentScope = newBlock;*/
 
             foreach (var expr in context.expression())
             {
                 Visit(expr);
             }
 
-            Manager.CurrentScope = Manager.CurrentScope.Parent;
-            Manager.CurrentScope.Children.Remove(newBlock);
+            /*Manager.CurrentScope = Manager.CurrentScope.Parent;
+            Manager.CurrentScope.Children.Remove(newBlock);*/
 
             return 0;
         }
@@ -261,18 +290,17 @@ namespace VaMaCool
         {
             Console.WriteLine("--VisitAssignment--");
 
-            Manager.CurrentScope.IdValues.Add(new Formal()
-            {
-                Id = context.ID().GetText(),
-                Expression = context.expression()
-            });
 
-            //if (typeof(context.expression().GetType()) == typeof(CoolParser.NewContext))
-            //{                
-            //} 
+            Property prop= Manager.CurrentScope.Find(context.ID().GetText()).Item1;
+
+            _lastName = prop.Id;
+
+            if(prop.Expression != null)
+                prop.Value = Visit(prop.Expression);
 
             // eg for new B()=> we need to set scope-------- TODO ints get visited, shouldnt be  
-            Visit(context.expression());
+            prop.Value = Visit(context.expression());
+
 
             return base.VisitAssignment(context);
         }

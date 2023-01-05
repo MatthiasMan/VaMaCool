@@ -32,11 +32,23 @@ namespace VaMaCool
 
         public override object VisitMethod([NotNull] CoolParser.MethodContext context)
         {
-            Current.Methods.Add(context.ID().GetText());
+
+            Method x = new Method();
+
+            x.Id = context.ID().GetText();
+
+            x.Expression = context.expression();
+            x.Parameter.AddRange(context.formal());
+            
+            Current.Methods.Add(x);
 
             return base.VisitMethod(context);
         }
 
+        public override object VisitExpression([NotNull] CoolParser.ExpressionContext context)
+        {
+            return base.VisitExpression(context);
+        }
 
         public override object VisitId([NotNull] CoolParser.IdContext context)
         {

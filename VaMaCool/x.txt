@@ -1,9 +1,9 @@
-﻿class Foo inherits Bazz {
+﻿class Foo {
      a : Int;
 
      b : Int;
 
-     doh() : Int;
+     doh() : Int { 2 };
 
 };
 
@@ -11,7 +11,6 @@ class Bar inherits Razz {
 
      c : Int <- doh();
 
-     d : Object <- printh();
 };
 
 
@@ -21,19 +20,18 @@ class Razz inherits Foo {
 
      f : Int ;
 
+     g : Car <- new Car;
+
 };
 
-class Bazz inherits IO {
+class Car {
 
-     h : Int <- 1;
+     wheels : Int <- 4;
 
-     g : Int ;
+     f : Int ;
 
-     i : Object ;
+     addWheel() : Int { wheels <- wheels + 1; wheels; }
 
-     printh() : Int { { out_int(h); 0; } };
-
-     doh() : Int { (let i: Int <- h in { h <- h + 1; i; } ) };
 };
 
 class Main {
@@ -41,7 +39,8 @@ class Main {
   b : Int <- 4;
   c : Int <- 4;
   d : Int <- 4;
+  x : Car <- new Car;
 
-  main(): String { "do nothing" };
+  main(): String { {x.addWheel() ;b <- 5; x <- new Car;x <- new Bike;y <- new Car; x.addWheel() ; "gggg"; }};
 
 };

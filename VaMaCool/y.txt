@@ -1,0 +1,21 @@
+﻿
+class Car {
+
+     wheels : Int <- 4;
+
+     f : Int ;
+
+     addWheel() : Int { wheels <- wheels + 1; wheels; }
+
+};
+
+class Main {
+  a : Int <- 4;
+  b : Int <- 4;
+  c : Int <- 4;
+  d : Int <- 4;
+  x : Car <- new Car;
+
+  main(): String { let input: Int <- 5 in let jhjh: String <- "gg" in 5 };
+
+};
